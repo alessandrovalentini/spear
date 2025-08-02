@@ -1,15 +1,13 @@
 from fastapi import FastAPI, HTTPException, status
 from prometheus_client import Gauge, generate_latest, CONTENT_TYPE_LATEST, CollectorRegistry
 from fastapi.responses import Response
-import logging
 import uvicorn
 
-from pdu_io.read_serial import Plug, ArduinoSerial, SerialCommunicationError
+from pdu_io.read_serial import Plug, ArduinoSerial
 from utils.setup import load_settings
 
 settings = load_settings("config.yaml")
 arduino = ArduinoSerial(settings.serial.port, settings.serial.baud_rate, timeout=settings.serial.timeout)
-ready = False
 
 # use custom registry to hide default python metrics
 custom_registry = CollectorRegistry()
@@ -58,15 +56,3 @@ def get_plug(plug_id: int) -> Plug:
 @app.get("/healthz")
 def liveness():
     return {"status": "alive"}
-
-
-@app.get("/readyz")
-def readiness(response: Response):
-    if ready:
-        return {"status": "ready"}
-    response.status_code = status.HTTP_503_SERVICE_UNAVAILABLE
-    return {"status": "not ready"}
-
-
-if __name__ == "__main__":
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=False)
