@@ -10,9 +10,9 @@ logger = get_logger(__name__)
 @dataclasses.dataclass
 class Plug:
     id: int
-    voltage: float
-    power: float
-    current: float
+    voltage: int
+    power: int
+    current: int
     active: bool
     voltage_unit: str = "V"
     power_unit: str = "W"
