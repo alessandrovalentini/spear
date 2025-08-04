@@ -1,0 +1,3 @@
+[submodule "Arduino/libraries/EmonLib"]
+	path = Arduino/libraries/EmonLib
+	url = https://github.com/openenergymonitor/EmonLib.git
