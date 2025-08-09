@@ -1,4 +1,4 @@
-.PHONY: test lint clean run demo-up demo-down
+.PHONY: test lint clean run demo docker-up docker-down
 
 test:
 	PYTHONPATH=. pytest --cov=. --cov-report=term-missing -v
@@ -12,10 +12,13 @@ clean:
 	rm -rf .pytest_cache .coverage htmlcov
 
 run:
-	uvicorn main:app --host 0.0.0.0 --port 8000
+	python main.py
 
-demo-up:
+demo:
+	python main.py --demo
+
+docker-up:
 	docker compose -f docker/docker-compose.yaml up
 
-demo-down:
+docker-down:
 	docker compose -f docker/docker-compose.yaml down

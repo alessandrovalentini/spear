@@ -1,3 +1,6 @@
+import argparse
+import random
+
 from fastapi import FastAPI, HTTPException, status
 from prometheus_client import Gauge, generate_latest, CONTENT_TYPE_LATEST, CollectorRegistry
 from fastapi.responses import Response
@@ -5,20 +8,13 @@ import uvicorn
 
 from pdu_io.read_serial import Plug, ArduinoSerial
 from utils.setup import load_settings
+from utils.stub import mock_read
+
+parser = argparse.ArgumentParser()
+parser.add_argument('--demo', action='store_true', help='Start SPEAR with random generator')
+args, _ = parser.parse_known_args()
 
 settings = load_settings("config.yaml")
-arduino = ArduinoSerial(settings.serial.port, settings.serial.baud_rate, timeout=settings.serial.timeout)
-
-# use custom registry to hide default python metrics
-custom_registry = CollectorRegistry()
-
-plug_voltage = Gauge("plug_voltage", "Voltage per plug", ["plug_id", "description"], registry=custom_registry)
-plug_current = Gauge("plug_current", "Current per plug", ["plug_id", "description"], registry=custom_registry)
-plug_power = Gauge("plug_power", "Power per plug", ["plug_id", "description"], registry=custom_registry)
-plug_active = Gauge("plug_active", "Active status of plug", ["plug_id", "description"], registry=custom_registry)
-measure_time = Gauge("measure_time", "Time required to measure", registry=custom_registry)
-
-app = FastAPI()
 
 
 def update_metrics():
@@ -30,6 +26,25 @@ def update_metrics():
         plug_power.labels(**labels).set(plug.power)
         plug_active.labels(**labels).set(1 if plug.active else 0)
     measure_time.set(time)
+
+
+# use custom registry to hide default python metrics
+custom_registry = CollectorRegistry()
+
+plug_voltage = Gauge("plug_voltage", "Voltage per plug", ["plug_id", "description"], registry=custom_registry)
+plug_current = Gauge("plug_current", "Current per plug", ["plug_id", "description"], registry=custom_registry)
+plug_power = Gauge("plug_power", "Power per plug", ["plug_id", "description"], registry=custom_registry)
+plug_active = Gauge("plug_active", "Active status of plug", ["plug_id", "description"], registry=custom_registry)
+measure_time = Gauge("measure_time", "Time required to measure", registry=custom_registry)
+
+if args.demo:
+    print("[DEMO MODE] Data will be randomly generated and not read from serial.")
+
+    ArduinoSerial.__init__ = lambda self, *a, **kw: None
+    ArduinoSerial.read = mock_read
+
+arduino = ArduinoSerial(settings.serial.port, settings.serial.baud_rate, timeout=settings.serial.timeout)
+app = FastAPI()
 
 
 @app.get("/metrics")
@@ -56,3 +71,9 @@ def get_plug(plug_id: int) -> Plug:
 @app.get("/healthz")
 def liveness():
     return {"status": "alive"}
+
+
+if __name__ == "__main__":
+    import uvicorn
+
+    uvicorn.run("main:app", host="0.0.0.0", port=8000)

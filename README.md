@@ -49,12 +49,16 @@ The author assumes no liability for any harm resulting from the use of this proj
 - [ ] Read actual plug state
 - [ ] Control status LED for switches
 
+### 🔌 UPS measurement reading
+- [ ] Read UPS values from NUT
+- [ ] Expose UPS Values as metrics
+
 ### 🧪 Testing Environment
 
 - [x] Launch Prometheus and Grafana via Docker Compose (for local testing)
 - [x] Automatically configure Prometheus to scrape local instance
 - [ ] Automatically configure Grafana to connect to local Prometheus
-- [ ] Generate random values to simulate data without Arduino
+- [x] Generate random values to simulate data without Arduino
 
 ### 📊 Other
 
@@ -71,8 +75,8 @@ The project ships a makefile which can cover the most common cases. From project
 - `make test`: run unit test with coverage
 - `make clean`: delete temporary files
 - `make lint`: automatically fix linting
-- `make demo-up`: spawn prometheus and grafana containers
-- `make demo-down`: tear down prometheus and grafana containers
+- `make docker-up`: spawn prometheus and grafana containers
+- `make docker-down`: tear down prometheus and grafana containers
 
 ---
 
