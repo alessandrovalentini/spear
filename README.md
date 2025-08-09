@@ -57,7 +57,7 @@ The author assumes no liability for any harm resulting from the use of this proj
 
 - [x] Launch Prometheus and Grafana via Docker Compose (for local testing)
 - [x] Automatically configure Prometheus to scrape local instance
-- [ ] Automatically configure Grafana to connect to local Prometheus
+- [x] Automatically configure Grafana to connect to local Prometheus
 - [x] Generate random values to simulate data without Arduino
 
 ### 📊 Other
@@ -75,14 +75,16 @@ The project ships a makefile which can cover the most common cases. From project
 - `make test`: run unit test with coverage
 - `make clean`: delete temporary files
 - `make lint`: automatically fix linting
-- `make docker-up`: spawn prometheus and grafana containers
+- `make docker-up`: spawn prometheus and grafana containers with default dashboard and datasource
 - `make docker-down`: tear down prometheus and grafana containers
 
 ---
 
 # 📊 Dashboards
 
-The project provides also some pre-built dashboards which can be imported in an existing grafana instance or in the
-grafana demo instance.
+The project provides also some pre-built dashboards which can be imported in an existing grafana instance.
+
+The docker compose environment automatically spawns with imported dashboards and configured datasource as as demo or
+development environment.
 
 ![plug dashboard](doc/imgs/plug_dashboard.png)

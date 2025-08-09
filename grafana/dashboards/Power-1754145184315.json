@@ -489,6 +489,17 @@
   "templating": {
     "list": [
       {
+        "name": "DS_PROMETHEUS",
+        "type": "datasource",
+        "query": "prometheus",
+        "current": {
+          "text": "Prometheus",
+          "value": "Prometheus"
+        },
+        "label": "Prometheus",
+        "refresh": 1
+      },
+      {
         "allowCustomValue": false,
         "current": {},
         "definition": "label_values(plug_current,plug_id)",

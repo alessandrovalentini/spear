@@ -1,25 +1,24 @@
 version: '3.8'
 
 services:
-  prometheus:
+  prometheus1:
     image: prom/prometheus
     container_name: prometheus
     ports:
       - "9090:9090"
     volumes:
-      - ./config/prometheus.yaml:/etc/prometheus/prometheus.yml:ro
+      - ./config/prometheus/prometheus.yaml:/etc/prometheus/prometheus.yml:ro
     restart: unless-stopped
 
-  grafana:
+  grafana1:
     image: grafana/grafana
     container_name: grafana
     ports:
       - "3000:3000"
     environment:
-      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=password
     volumes:
-      - grafana-storage:/var/lib/grafana
+      - ./config/grafana/provisioning:/etc/grafana/provisioning
+      - ../grafana/dashboards/:/var/lib/grafana/dashboards
     restart: unless-stopped
-
-volumes:
-  grafana-storage:

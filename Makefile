@@ -18,7 +18,7 @@ demo:
 	python main.py --demo
 
 docker-up:
-	docker compose -f docker/docker-compose.yaml up
+	docker compose -f docker/docker-compose.yaml up -d
 
 docker-down:
 	docker compose -f docker/docker-compose.yaml down
