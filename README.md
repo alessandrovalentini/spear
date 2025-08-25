@@ -1,6 +1,8 @@
-![Tests](https://github.com/alessandrovalentini/spear/actions/workflows/tests.yml/badge.svg)
+[![Tests](https://github.com/alessandrovalentini/spear/actions/workflows/tests.yml/badge.svg)](https://github.com/alessandrovalentini/spear/actions/workflows/tests.yml)
 [![codecov](https://codecov.io/gh/alessandrovalentini/spear/branch/main/graph/badge.svg)](https://codecov.io/gh/alessandrovalentini/spear)
-
+![License: CC BY-NC 4.0](https://img.shields.io/badge/License-CC%20BY--NC%204.0-lightgrey.svg)
+![GitHub last commit](https://img.shields.io/github/last-commit/alessandrovalentini/spear)
+![GitHub commit activity](https://img.shields.io/github/commit-activity/m/alessandrovalentini/spear)
 
 # What is SPEAR
 
