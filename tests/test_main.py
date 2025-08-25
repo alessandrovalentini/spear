@@ -4,9 +4,21 @@ from unittest.mock import patch
 from fastapi.testclient import TestClient
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
 from pdu_io.read_serial import Plug
 from main import app
+
+import pytest
+from unittest.mock import MagicMock
+import serial
+
+
+@pytest.fixture(autouse=True)
+def mock_serial(monkeypatch):
+    fake_serial = MagicMock()
+    # fake_serial.readline.return_value = b"1,230,10,50;t1234\n"
+    monkeypatch.setattr(serial, "Serial", lambda *args, **kwargs: fake_serial)
+    return fake_serial
+
 
 client = TestClient(app)
 plug1 = Plug(id=1, voltage=230, power=100, current=500, active=True, description="Plug 1")

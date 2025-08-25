@@ -4,7 +4,6 @@ import random
 from fastapi import FastAPI, HTTPException, status
 from prometheus_client import Gauge, generate_latest, CONTENT_TYPE_LATEST, CollectorRegistry
 from fastapi.responses import Response
-import uvicorn
 
 from pdu_io.read_serial import Plug, ArduinoSerial
 from utils.setup import load_settings
@@ -16,19 +15,24 @@ args, _ = parser.parse_known_args()
 
 settings = load_settings("config.yaml")
 
+_arduino_instance = None  # istanza privata per lazy init
 
-def update_metrics():
-    plugs, time = arduino.get_measurements()
-    for plug in plugs.values():
-        labels = {"plug_id": str(plug.id), "description": plug.description}
-        plug_voltage.labels(**labels).set(plug.voltage)
-        plug_current.labels(**labels).set(plug.current)
-        plug_power.labels(**labels).set(plug.power)
-        plug_active.labels(**labels).set(1 if plug.active else 0)
-    measure_time.set(time)
+def get_arduino():
+    global _arduino_instance
+    if _arduino_instance is None:
+        _arduino_instance = ArduinoSerial(
+            settings.serial.port,
+            settings.serial.baud_rate,
+            timeout=settings.serial.timeout
+        )
+    return _arduino_instance
 
+if args.demo:
+    print("[DEMO MODE] Data will be randomly generated and not read from serial.")
+    ArduinoSerial.__init__ = lambda self, *a, **kw: None
+    ArduinoSerial.read = mock_read
 
-# use custom registry to hide default python metrics
+# --- Prometheus custom registry ---
 custom_registry = CollectorRegistry()
 
 plug_voltage = Gauge("plug_voltage", "Voltage per plug", ["plug_id", "description"], registry=custom_registry)
@@ -37,13 +41,16 @@ plug_power = Gauge("plug_power", "Power per plug", ["plug_id", "description"], r
 plug_active = Gauge("plug_active", "Active status of plug", ["plug_id", "description"], registry=custom_registry)
 measure_time = Gauge("measure_time", "Time required to measure", registry=custom_registry)
 
-if args.demo:
-    print("[DEMO MODE] Data will be randomly generated and not read from serial.")
+def update_metrics():
+    plugs, time = get_arduino().get_measurements()
+    for plug in plugs.values():
+        labels = {"plug_id": str(plug.id), "description": plug.description}
+        plug_voltage.labels(**labels).set(plug.voltage)
+        plug_current.labels(**labels).set(plug.current)
+        plug_power.labels(**labels).set(plug.power)
+        plug_active.labels(**labels).set(1 if plug.active else 0)
+    measure_time.set(time)
 
-    ArduinoSerial.__init__ = lambda self, *a, **kw: None
-    ArduinoSerial.read = mock_read
-
-arduino = ArduinoSerial(settings.serial.port, settings.serial.baud_rate, timeout=settings.serial.timeout)
 app = FastAPI()
 
 
@@ -55,13 +62,13 @@ def metrics():
 
 @app.get("/plugs", response_model=list[Plug])
 def list_plugs():
-    plugs, time = arduino.get_measurements()
+    plugs, time = get_arduino().get_measurements()
     return plugs.values()
 
 
 @app.get("/plugs/{plug_id}", response_model=Plug)
 def get_plug(plug_id: int) -> Plug:
-    plugs, time = arduino.get_measurements()
+    plugs, time = get_arduino().get_measurements()
     if plug_id <= len(plugs):
         return plugs.get(plug_id)
     else:
