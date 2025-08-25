@@ -1,7 +1,7 @@
 .PHONY: test lint clean run demo docker-up docker-down
 
 test:
-	PYTHONPATH=. pytest --cov=. --cov-report=term-missing -v
+	PYTHONPATH=. pytest --cov=. --cov-report=xml
 
 lint:
 	ruff check . --fix

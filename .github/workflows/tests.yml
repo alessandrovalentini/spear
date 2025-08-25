@@ -25,15 +25,12 @@ jobs:
 
       - name: Run tests with coverage
         run: |
-          pytest --cov=. --cov-report=xml --cov-report=term-missing -v
+          make test
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
+          files: coverage.xml
           fail_ci_if_error: true
           verbose: true
-          flags: unittests
-          files: ./coverage.xml
-          disable_default_path_finding: true
-          enforce_branch: main
