@@ -1,3 +1,7 @@
+![Tests](https://github.com/alessandrovalentini/spear/actions/workflows/tests.yml/badge.svg)
+[![codecov](https://codecov.io/gh/alessandrovalentini/spear/branch/main/graph/badge.svg)](https://codecov.io/gh/alessandrovalentini/spear)
+
+
 # What is SPEAR
 
 **SPEAR** is a project designed to provide a low-cost, smart Power Distribution Unit (PDU) based on Arduino and
