@@ -1,7 +1,7 @@
 import argparse
-import random
 
-from fastapi import FastAPI, HTTPException, status
+from pathlib import Path
+from fastapi import FastAPI, HTTPException
 from prometheus_client import Gauge, generate_latest, CONTENT_TYPE_LATEST, CollectorRegistry
 from fastapi.responses import Response
 
@@ -13,9 +13,12 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--demo', action='store_true', help='Start SPEAR with random generator')
 args, _ = parser.parse_known_args()
 
-settings = load_settings("config.yaml")
+BASE_DIR = Path(__file__).resolve().parent
+CONFIG_PATH = BASE_DIR / "config.yaml"
+settings = load_settings(CONFIG_PATH)
 
-_arduino_instance = None  # istanza privata per lazy init
+_arduino_instance = None
+
 
 def get_arduino():
     global _arduino_instance
@@ -26,6 +29,7 @@ def get_arduino():
             timeout=settings.serial.timeout
         )
     return _arduino_instance
+
 
 if args.demo:
     print("[DEMO MODE] Data will be randomly generated and not read from serial.")
@@ -41,6 +45,7 @@ plug_power = Gauge("plug_power", "Power per plug", ["plug_id", "description"], r
 plug_active = Gauge("plug_active", "Active status of plug", ["plug_id", "description"], registry=custom_registry)
 measure_time = Gauge("measure_time", "Time required to measure", registry=custom_registry)
 
+
 def update_metrics():
     plugs, time = get_arduino().get_measurements()
     for plug in plugs.values():
@@ -50,6 +55,7 @@ def update_metrics():
         plug_power.labels(**labels).set(plug.power)
         plug_active.labels(**labels).set(1 if plug.active else 0)
     measure_time.set(time)
+
 
 app = FastAPI()
 
