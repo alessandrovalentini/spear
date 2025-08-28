@@ -1,21 +1,21 @@
 .PHONY: test lint clean run demo docker-up docker-down
 
 test:
-	PYTHONPATH=. pytest --cov=. --cov-report=xml
+	PYTHONPATH=./webservice pytest webservice/tests --cov=webservice --cov-report=xml
 
 lint:
-	ruff check . --fix
+	ruff check webservice --fix
 
 clean:
 	find . -type f -name '*.pyc' -delete
 	find . -type d -name '__pycache__' -delete
-	rm -rf .pytest_cache .coverage htmlcov
+	rm -rf .pytest_cache .coverage htmlcov coverage.xml
 
 run:
-	python main.py
+	python webservice/main.py
 
 demo:
-	python main.py --demo
+	python webservice/main.py --demo
 
 docker-up:
 	docker compose -f docker/docker-compose.yaml up -d

@@ -22,7 +22,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          if [ -f webservice/requirements.txt ]; then pip install -r webservice/requirements.txt; fi
           pip install pytest pytest-cov codecov
 
       - name: Run tests with coverage
