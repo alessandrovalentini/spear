@@ -68,7 +68,7 @@ The author assumes no liability for any harm resulting from the use of this proj
 
 ### 📊 Other
 
-- [ ] Provide ready-to-use Grafana dashboards
+- [x] Provide ready-to-use Grafana dashboards
 - [ ] Pack the entire project into a **deb** package for easy installation on Raspberry Pi OS
 
 ---
