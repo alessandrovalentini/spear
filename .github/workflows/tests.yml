@@ -36,3 +36,42 @@ jobs:
           files: coverage.xml
           fail_ci_if_error: true
           verbose: true
+
+  arduino-build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        board:
+          - arduino:avr:uno
+          - arduino:avr:mega
+          - arduino:avr:nano
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: true   # serve per avere EmonLib
+
+      - name: Set up Arduino CLI
+        uses: arduino/setup-arduino-cli@v1
+
+      - name: Install board core
+        run: |
+          arduino-cli core update-index
+          arduino-cli core install arduino:avr
+
+      - name: Compile main sketch
+        run: |
+          arduino-cli compile \
+            --fqbn ${{ matrix.board }} \
+            --output-dir build/${{ matrix.board }} \
+            --libraries ./Arduino/libraries \
+            ./Arduino/multi_ac_current_measure
+
+#      - name: Upload HEX artifacts
+#        uses: actions/upload-artifact@v4
+#        with:
+#          name: hex-${{ matrix.board }}
+#          path: build/${{ matrix.board }}/*.hex
+#          retention-days: 7
+
