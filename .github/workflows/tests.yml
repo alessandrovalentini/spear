@@ -50,7 +50,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          submodules: true   # serve per avere EmonLib
+          submodules: true
 
       - name: Set up Arduino CLI
         uses: arduino/setup-arduino-cli@v1

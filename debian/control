@@ -1,0 +1,14 @@
+Source: spear
+Section: web
+Priority: optional
+Maintainer: Alessandro Valentini <4301583+alessandrovalentini@users.noreply.github.com>
+Build-Depends: debhelper-compat (= 13)
+Standards-Version: 4.6.2
+Rules-Requires-Root: no
+
+Package: spear
+Architecture: all
+Depends: ${misc:Depends}, ${python3:Depends}
+Description: Python web service to manage a Smart PDS
+ A python webserver which reads data from current sensors and expose them as Prometheus metrics and
+ allows remove power on/off.

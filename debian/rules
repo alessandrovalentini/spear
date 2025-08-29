@@ -1,0 +1,7 @@
+#!/usr/bin/make -f
+%:
+	dh $@
+
+override_dh_auto_install:
+	mkdir -p debian/spear/usr/share/spear
+	cp -r webservice/* debian/spear/usr/share/spear/
