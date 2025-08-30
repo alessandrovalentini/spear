@@ -1,4 +1,10 @@
-.PHONY: clean deb demo docker-down docker-up lint run test
+.PHONY: arduino clean deb demo docker-down docker-up lint run test
+
+arduino:
+	mkdir Arduino/build
+	arduino-cli core update-index
+	arduino-cli core install arduino:avr
+	arduino-cli compile --fqbn arduino:avr:nano --output-dir ./Arduino/build --libraries ./Arduino/libraries ./Arduino/multi_ac_current_measure
 
 clean:
 	# Clean python stuffs
