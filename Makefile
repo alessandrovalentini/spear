@@ -1,10 +1,4 @@
-.PHONY: test lint clean run demo docker-up docker-down deb
-
-test:
-	PYTHONPATH=./webservice pytest webservice/tests --cov=webservice --cov-report=xml
-
-lint:
-	ruff check webservice --fix
+.PHONY: clean deb demo docker-down docker-up lint run test
 
 clean:
 	# Clean python stuffs
@@ -16,17 +10,23 @@ clean:
 	rm -rf debian/spear debian/.debhelper  debian/spear.postrm.debhelper debian/spear.substvars debian/debhelper-build-stamp
 	rm -rf ../spear*.deb ../spear_*.changes ../spear_*.build ../spear_*.tar.gz ../spear_*.buildinfo ../spear_*.dsc
 
-run:
-	python webservice/main.py
+deb:
+	dpkg-buildpackage -us -uc
 
 demo:
 	python webservice/main.py --demo
 
-docker-up:
-	docker compose -f docker/docker-compose.yaml up -d
-
 docker-down:
 	docker compose -f docker/docker-compose.yaml down
 
-deb:
-	dpkg-buildpackage -us -uc
+docker-up:
+	docker compose -f docker/docker-compose.yaml up -d
+
+lint:
+	ruff check webservice --fix
+
+run:
+	python webservice/main.py
+
+test:
+	PYTHONPATH=./webservice pytest webservice/tests --cov=webservice --cov-report=xml
