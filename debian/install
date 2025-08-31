@@ -1,1 +1,2 @@
 webservice/*  usr/share/spear/
+Arduino/build/* usr/share/spear/firmware/

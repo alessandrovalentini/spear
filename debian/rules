@@ -2,6 +2,11 @@
 %:
 	dh $@
 
+override_dh_auto_build:
+	make arduino-build
+
 override_dh_auto_install:
-	mkdir -p debian/spear/usr/share/spear
+	mkdir -p debian/spear/usr/share/spear/firmware
 	cp -r webservice/* debian/spear/usr/share/spear/
+	cp -r Arduino/build/* debian/spear/usr/share/spear/firmware/
+	cp Arduino/upload2board.sh debian/spear/usr/share/spear/
