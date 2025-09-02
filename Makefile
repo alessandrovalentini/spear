@@ -1,4 +1,4 @@
-.PHONY: arduino-build arduino-detect arduino-flash arduino-upload clean deb demo docker-down docker-up lint run test
+.PHONY: arduino-build arduino-flash arduino-upload clean deb demo docker-down docker-up lint run test
 
 BOARD ?= arduino:avr:nano:cpu=atmega328old
 BUILD_DIR ?= ./Arduino/build

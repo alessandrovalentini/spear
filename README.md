@@ -69,7 +69,7 @@ The author assumes no liability for any harm resulting from the use of this proj
 ### 📊 Other
 
 - [x] Provide ready-to-use Grafana dashboards
-- [ ] Pack the entire project into a **deb** package for easy installation on Raspberry Pi OS
+- [x] Pack the entire project into a **deb** package for easy installation on Raspberry Pi OS
 
 ---
 
@@ -77,12 +77,17 @@ The author assumes no liability for any harm resulting from the use of this proj
 
 The project ships a makefile which can cover the most common cases. From project root run one of the following commands
 
+- `arduino-build`: compile arduino sketch
+- `arduino-flash`: copile sketch and upload
+- `arduino-upload`: upload compiled arduino sketch to board
+- `make clean`: clean artifacts and temporary file
+- `make docker-down`: tear down prometheus and grafana containers
+- `make docker-up`: spawn prometheus and grafana containers with default dashboard and datasource
+- `deb`: build deb package
+- `demo`: run server in demo mode (i.e. use random data generator instead of actual board)
+- `make lint`: automatically fix linting
 - `make run`: run server exposed on port 8000
 - `make test`: run unit test with coverage
-- `make clean`: delete temporary files
-- `make lint`: automatically fix linting
-- `make docker-up`: spawn prometheus and grafana containers with default dashboard and datasource
-- `make docker-down`: tear down prometheus and grafana containers
 
 ---
 
