@@ -15,9 +15,4 @@ fi
 "$VENV_DIR/bin/pip" install --upgrade pip
 "$VENV_DIR/bin/pip" install -r /usr/share/spear/requirements.txt
 
-if command -v systemctl >/dev/null 2>&1; then
-    systemctl daemon-reload
-    systemctl enable spear.service || true
-fi
-
 exit 0
