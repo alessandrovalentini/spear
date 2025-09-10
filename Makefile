@@ -12,7 +12,7 @@ arduino-build:
 	arduino-cli compile --fqbn $(BOARD) --output-dir $(BUILD_DIR) --libraries $(LIBS_DIR) $(SKETCH)
 
 arduino-upload:
-	bash Arduino/upload2board.sh $(BUILD_DIR) $(BOARD)
+	bash Arduino/upload2board.sh $(BUILD_DIR)
 
 arduino-flash: arduino-build arduino-upload
 
@@ -26,7 +26,7 @@ clean:
 	rm -rf Arduino/build
 
 	# Clean deb build
-	rm -rf debian/spear debian/.debhelper  debian/spear.postrm.debhelper debian/spear.substvars debian/debhelper-build-stamp
+	rm -rf debian/spear debian/.debhelper  debian/spear.postrm.debhelper debian/spear.substvars debian/debhelper-build-stamp  debian/spear.debhelper.log
 	rm -rf ../spear*.deb ../spear_*.changes ../spear_*.build ../spear_*.tar.gz ../spear_*.buildinfo ../spear_*.dsc
 
 deb:

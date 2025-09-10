@@ -3,18 +3,20 @@ set -e
 
 # Those defaults are needed for the built package
 BUILD_DIR=${1:-/usr/share/spear/firmware/}
-DEFAULT_FQBN=${2:-arduino:avr:nano:cpu=atmega328old}
+CONF_FILE="/etc/avrdude.conf"
+MCU_TYPE="atmega328p"
+PORT=$(ls /dev/ttyUSB* | head -n1)
+BAUD_RATE=${2:-"57600"}
+SKETCH_NAME="multi_ac_current_measure.ino"
+SKETCH_PATH="$BUILD_DIR/$SKETCH_NAME"
+PROGRAMMER_TYPE="arduino"
 
-AC_RESULT=$(arduino-cli board list | grep "Serial Port (USB)" | sed "s/Serial Port (USB)//g")
-
-PORT=$(echo "${AC_RESULT}" | awk '{print $1}')
-FQBN=$(echo "${AC_RESULT}" | awk '{print $3}')
-
-if [[ "${FQBN}" == "Unknown" || -z "${FQBN}" ]]; then
-  echo "Unknown Port detected, using default = ${DEFAULT_FQBN}"
-  FQBN=${DEFAULT_FQBN}
+if [ -z "$PORT" ]; then
+  echo "Unable to find an arduino connected!" >&2
+  exit 1
 fi
 
-echo "Uploading code to board ${FQBN} on port ${PORT}"
-arduino-cli upload -v -p "${PORT}" -b "${FQBN}" --input-dir "${BUILD_DIR}"
+
+echo "Uploading code to board on port ${PORT}"
+avrdude -C"${CONF_FILE}" -v -p${MCU_TYPE} -c"${PROGRAMMER_TYPE}" -P"${PORT}" -b"${BAUD_RATE}" -D -U"flash:w:${SKETCH_PATH}.hex:i"
 echo "Upload successful!"
