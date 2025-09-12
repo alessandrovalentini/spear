@@ -23,11 +23,9 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r webservice/requirements-dev.txt
-          pip install pytest pytest-cov codecov
 
       - name: Run tests with coverage
-        run: |
-          make test
+        run: make test
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5
@@ -61,9 +59,7 @@ jobs:
           arduino-cli core install arduino:avr
 
       - name: Compile main sketch
-        run: |
-          set -euo pipefail
-          make arduino-build
+        run: make arduino-build
 
   build-deb:
     runs-on: ubuntu-latest
@@ -87,24 +83,17 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends \
             build-essential debhelper devscripts dh-python fakeroot \
-            python3-pytest python3-pytest-cov python3-fastapi python3-pydantic
-          
-          python -m pip install --upgrade pip
-          pip install -r webservice/requirements-dev.txt
-
+            python3-venv python3-pip python3-httpx systemd avrdude
 
       - name: Build .deb package
-        run: |
-          set -euo pipefail
-          make deb
+        run: make deb
 
       - name: Collect .deb artifacts
         id: collect_deb
         run: |
-          set -euo pipefail
           mapfile -t DEBS < <(find . -type f -name "*.deb" ! -name "*-dbgsym*.deb")
           if [ "${#DEBS[@]}" -eq 0 ]; then
-            echo "Error! No .deb package found after make deb. "; exit 1
+            echo "Error! No .deb package found after make deb."; exit 1
           fi
           mkdir -p dist
           cp -v "${DEBS[@]}" dist/
@@ -127,6 +116,7 @@ jobs:
         platform:
           - linux/arm/v7
           - linux/arm64/v8
+
     steps:
       - name: Download .deb artifact
         uses: actions/download-artifact@v4
@@ -141,18 +131,12 @@ jobs:
 
       - name: Verify install on ${{ matrix.platform }} container
         run: |
-          set -euo pipefail
-          
           docker run --rm \
             --platform ${{ matrix.platform }} \
             -v "$PWD:/work" -w /work \
             debian:bookworm bash -lc '
               set -euo pipefail
               apt-get update
-              
-              # Install local deb
               apt-get install -y ./deb/*.deb || (dpkg -i ./deb/*.deb && apt-get -f install -y)
-              
-              # Verify installation
               dpkg -l | grep "^ii" >/dev/null
             '
