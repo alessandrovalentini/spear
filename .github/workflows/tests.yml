@@ -91,7 +91,7 @@ jobs:
       - name: Collect .deb artifacts
         id: collect_deb
         run: |
-          mapfile -t DEBS < <(find . -type f -name "*.deb" ! -name "*-dbgsym*.deb")
+          mapfile -t DEBS < <(find ../ -type f -name "*.deb" ! -name "*.deb")
           if [ "${#DEBS[@]}" -eq 0 ]; then
             echo "Error! No .deb package found after make deb."; exit 1
           fi
