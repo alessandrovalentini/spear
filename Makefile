@@ -30,7 +30,7 @@ clean:
 	rm -rf ../spear*.deb ../spear_*.changes ../spear_*.build ../spear_*.tar.gz ../spear_*.buildinfo ../spear_*.dsc
 
 deb:
-	dpkg-buildpackage -us -uc
+	dpkg-buildpackage -us -uc -aarmhf
 
 demo:
 	python webservice/main.py --demo

@@ -1,2 +1,2 @@
 webservice/*  usr/share/spear/
-Arduino/build/* usr/share/spear/firmware/
+Arduino/build/multi_ac_current_measure.ino.hex usr/share/spear/firmware/
