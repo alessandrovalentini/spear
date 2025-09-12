@@ -22,7 +22,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          if [ -f webservice/requirements.txt ]; then pip install -r webservice/requirements.txt; fi
+          pip install -r webservice/requirements-dev.txt
           pip install pytest pytest-cov codecov
 
       - name: Run tests with coverage
@@ -62,11 +62,8 @@ jobs:
 
       - name: Compile main sketch
         run: |
-          arduino-cli compile \
-            --fqbn ${{ matrix.board }} \
-            --output-dir build/${{ matrix.board }} \
-            --libraries ./Arduino/libraries \
-            ./Arduino/multi_ac_current_measure
+          set -euo pipefail
+          make arduino-build
 
   build-deb:
     runs-on: ubuntu-latest
@@ -74,12 +71,27 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - name: Set up Arduino CLI
+        uses: arduino/setup-arduino-cli@v1
+
+      - name: Install board core
+        run: |
+          arduino-cli core update-index
+          arduino-cli core install arduino:avr
 
       - name: Install Debian packaging tools
         run: |
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends \
-            build-essential debhelper devscripts dh-python fakeroot
+            build-essential debhelper devscripts dh-python fakeroot \
+            python3-pytest python3-pytest-cov python3-fastapi python3-pydantic
+          
+          python -m pip install --upgrade pip
+          pip install -r webservice/requirements-dev.txt
+
 
       - name: Build .deb package
         run: |

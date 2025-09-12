@@ -13,3 +13,5 @@ override_dh_auto_install:
 	cp -r webservice/* debian/spear/usr/share/spear/
 	cp -r Arduino/build/*.hex debian/spear/usr/share/spear/firmware/
 	cp Arduino/upload2board.sh debian/spear/usr/share/spear/
+
+override_dh_auto_test:
