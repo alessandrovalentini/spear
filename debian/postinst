@@ -15,4 +15,9 @@ fi
 "$VENV_DIR/bin/pip" install --upgrade pip
 "$VENV_DIR/bin/pip" install -r /usr/share/spear/requirements.txt
 
+# Make service user able to read serial
+if id -u www-data >/dev/null 2>&1; then
+    adduser www-data dialout || true
+fi
+
 exit 0
