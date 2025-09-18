@@ -1,0 +1,13 @@
+[Unit]
+Description=spear Python PDU
+After=network.target
+
+[Service]
+ExecStart=/usr/share/spear/venv/bin/python /usr/share/spear/main.py
+WorkingDirectory=/usr/share/spear
+Restart=always
+User=www-data
+Group=www-data
+
+[Install]
+WantedBy=multi-user.target

@@ -68,21 +68,59 @@ The author assumes no liability for any harm resulting from the use of this proj
 
 ### 📊 Other
 
-- [ ] Provide ready-to-use Grafana dashboards
-- [ ] Pack the entire project into a **deb** package for easy installation on Raspberry Pi OS
+- [x] Provide ready-to-use Grafana dashboards
+- [x] Pack the entire project into a **deb** package for easy installation on Raspberry Pi OS
 
 ---
 
 # Usage
 
+## Build and development
+
 The project ships a makefile which can cover the most common cases. From project root run one of the following commands
 
+- `arduino-build`: compile arduino sketch
+- `arduino-flash`: copile sketch and upload
+- `arduino-upload`: upload compiled arduino sketch to board
+- `make clean`: clean artifacts and temporary file
+- `make docker-down`: tear down prometheus and grafana containers
+- `make docker-up`: spawn prometheus and grafana containers with default dashboard and datasource
+- `deb`: build deb package
+- `demo`: run server in demo mode (i.e. use random data generator instead of actual board)
+- `make lint`: automatically fix linting
 - `make run`: run server exposed on port 8000
 - `make test`: run unit test with coverage
-- `make clean`: delete temporary files
-- `make lint`: automatically fix linting
-- `make docker-up`: spawn prometheus and grafana containers with default dashboard and datasource
-- `make docker-down`: tear down prometheus and grafana containers
+
+## Installation and configuration
+
+Once the deb package is built, Spear can be installed as a normal package:
+```commandline
+apt install spear_0.1.0-1_all.deb
+```
+
+Then connect your Arduino via USB to the Raspberry Pi and deploy the Spear firmware on it by running:
+```commandline
+upload2board
+```
+
+If everything is correct, you can start the service (and enable it if you want it to run at startup):
+```commandline
+systemctl daemon-reload
+systemctl start spear.service
+systemctl enable spear.service
+```
+
+At this point, the service will be available at `http://<your_raspberry_ip>:8000/metrics`.
+
+You can monitor the logs as with any other service:
+```commandline
+journalctl -u spear -f
+```
+
+In general, it is not necessary to change the configuration, but if needed you can edit the file:
+`/usr/share/spear/config.yaml`
+
+
 
 ---
 

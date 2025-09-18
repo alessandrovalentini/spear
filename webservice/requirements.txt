@@ -3,9 +3,5 @@ httpx
 prometheus_client
 pydantic
 pyserial
-pytest
-pytest-asyncio
-pytest-cov
 PyYAML
-ruff
 uvicorn
